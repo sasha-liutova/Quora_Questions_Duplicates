@@ -6,28 +6,33 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
 
 print('Loading data...')
-features_train = pickle.load(open('./wmd_rf_results/features_train_wmd.pkl', 'wb'))
-labels_train = pickle.load(open('./wmd_rf_results/labels_train_wmd.pkl', 'wb'))
+
+features_train = pickle.load(open('./wmd_rf_results/features_train_wmd.pkl', 'rb'))
+labels_train = pickle.load(open('./wmd_rf_results/labels_train_wmd.pkl', 'rb'))
 features_test = pickle.load(open('./wmd_rf_results/features_test_wmd.pkl', 'wb'))
 
-print('Tuning model hyperparameters...')
-t0 = time.time()
+# features_train = features_train[:1000]
+# labels_train = labels_train[:1000]
 
-parameters = {'C': [1, 5, 10], 'epsilon': [0.1, 0.2, 0.3]}
-svr = SVR()
-grid_search = GridSearchCV(svr, parameters)
-grid_search.fit(features_train, labels_train)
-print('Grid Search Results:')
-print('best_params: ', grid_search.best_params_)
-print(grid_search.cv_results_)
-best_params = grid_search.best_params_
+# print('Tuning model hyperparameters...')
+# t0 = time.time()
+#
+# parameters = {'C': [1], 'epsilon': [0.3], 'kernel':['linear', 'poly', 'rbf']}
+# svr = SVR()
+# grid_search = GridSearchCV(svr, parameters)
+# grid_search.fit(features_train, labels_train)
+# print('Grid Search Results:')
+# print('best_params: ', grid_search.best_params_)
+# print(grid_search.cv_results_)
+# best_params = grid_search.best_params_
 
-print('Time: ', time.time() - t0)
+best_params = {'C': 1, 'epsilon': 0.3, 'kernel':'rbf'}
+
 t0 = time.time()
 
 print('Training model...')
 
-model = SVR(C=best_params['C'], epsilon=best_params['epsilon'], kernel='rbf')
+model = SVR(C=best_params['C'], epsilon=best_params['epsilon'], kernel=best_params['kernel'])
 model = model.fit(features_train, labels_train)
 pickle.dump(model, open('model_wmd_svm.pkl', 'wb'))
 

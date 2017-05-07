@@ -16,8 +16,8 @@ model = gensim.models.doc2vec.Doc2Vec.load('../enwiki_dbow/doc2vec.bin')
 
 features_train = pickle.load(open('./doc2vec_results_1/features_train_doc2vec.pkl', 'rb'))
 labels_train = pickle.load(open('./doc2vec_results_1/labels_train_doc2vec.pkl', 'rb'))
-# features_train = features_train[:20]
-# labels_train = labels_train[:20]
+# features_train = features_train[:1000]
+# labels_train = labels_train[:1000]
 
 print('Extracting testing features...')
 
@@ -39,25 +39,29 @@ for index, row in test_data.iterrows():
     features_test.append(feature)
 
 
-print('Tuning model hyperparameters...')
-t0 = time.time()
+# print('Tuning model hyperparameters...')
+# t0 = time.time()
+#
+# parameters = {'C': [1], 'epsilon': [0.2, 0.4], 'kernel':['linear']}
+# svr = SVR()
+# grid_search = GridSearchCV(svr, parameters)
+# grid_search.fit(features_train, labels_train)
+# print('Grid Search Results:')
+# print('best_params: ', grid_search.best_params_)
+# print(grid_search.cv_results_)
+# best_params = grid_search.best_params_
 
-parameters = {'C': [1, 5, 10], 'epsilon': [0.1, 0.2, 0.3]}
-svr = SVR()
-grid_search = GridSearchCV(svr, parameters)
-grid_search.fit(features_train, labels_train)
-print('Grid Search Results:')
-print('best_params: ', grid_search.best_params_)
-print(grid_search.cv_results_)
-best_params = grid_search.best_params_
+best_params = {'C': 1, 'epsilon': 0.4, 'kernel': 'linear'}
+
+
 print('Time: ', time.time() - t0)
 t0 = time.time()
 
 print('Training model...')
 
-model = SVR(C = best_params['C'], epsilon=best_params['epsilon'], kernel='rbf')
+model = SVR(C = best_params['C'], epsilon=best_params['epsilon'], kernel=best_params['kernel'])
 model = model.fit(features_train, labels_train)
-pickle.dump(model, open('model_doc2vec_RF.pkl', 'wb'))
+pickle.dump(model, open('model_doc2vec_svm.pkl', 'wb'))
 
 print('Time: ', time.time() - t0)
 t0 = time.time()
