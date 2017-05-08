@@ -5,6 +5,7 @@ import time
 # import gensim
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
+from sklearn.svm import LinearSVR
 
 t0 = time.time()
 
@@ -20,6 +21,7 @@ features_test = np.load('./doc2vec_results_1/features_test_doc2vec.npy')
 
 # features_train = features_train[:1000]
 # labels_train = labels_train[:1000]
+# features_test = features_test[:1000]
 
 # print('Extracting testing features...')
 #
@@ -61,7 +63,7 @@ t0 = time.time()
 
 print('Training model...')
 
-model = SVR(C = best_params['C'], epsilon=best_params['epsilon'], kernel=best_params['kernel'])
+model = LinearSVR(C = best_params['C'], epsilon=best_params['epsilon'])
 model = model.fit(features_train, labels_train)
 pickle.dump(model, open('model_doc2vec_svm.pkl', 'wb'))
 

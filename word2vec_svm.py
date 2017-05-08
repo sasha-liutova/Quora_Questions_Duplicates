@@ -2,9 +2,10 @@ import pandas as pd
 import pickle
 import time
 import numpy as np
-import gensim
+# import gensim
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
+from sklearn.svm import LinearSVR
 
 print('Loading data...')
 
@@ -33,7 +34,7 @@ t0 = time.time()
 
 print('Training model...')
 
-model = SVR(C=best_params['C'], epsilon=best_params['epsilon'], kernel=best_params['kernel'])
+model = LinearSVR(C=best_params['C'], epsilon=best_params['epsilon'])
 model = model.fit(features_train, labels_train)
 pickle.dump(model, open('model_word2vec_svm.pkl', 'wb'))
 
